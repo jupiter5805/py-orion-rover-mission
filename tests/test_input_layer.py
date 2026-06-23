@@ -1,4 +1,4 @@
-from src.input_layer import parse_plateau, parse_position, parse_instructions
+from src.input_layer import parse_plateau, parse_position, parse_instructions, parse_mission
 
 
 def test_parse_plateau_returns_dictionary():
@@ -65,3 +65,82 @@ def test_parse_instructions_multiple_instructions_in_order():
     result = parse_instructions("LMLMLMLMM")
 
     assert result == ["L", "M", "L", "M", "L", "M", "L", "M", "M"]
+
+
+def test_parse_mission_with_no_rovers():
+    text = """5 5"""
+
+    result = parse_mission(text)
+
+    assert result == {
+        "plateau": {"max_x": 5, "max_y": 5},
+        "rovers": [],
+    }
+
+
+def test_parse_mission_with_one_rover():
+    text = """5 5
+1 2 N
+LMLMLMLMM"""
+
+    result = parse_mission(text)
+
+    assert result == {
+        "plateau": {"max_x": 5, "max_y": 5},
+        "rovers": [
+            {
+                "position": {"x": 1, "y": 2, "direction": "N"},
+                "instructions": ["L", "M", "L", "M", "L", "M", "L", "M", "M"],
+            }
+        ],
+    }
+
+
+def test_parse_mission_with_two_rovers():
+    text = """5 5
+1 2 N
+LMLMLMLMM
+3 3 E
+MMRMMRMRRM"""
+
+    result = parse_mission(text)
+
+    assert result == {
+        "plateau": {"max_x": 5, "max_y": 5},
+        "rovers": [
+            {
+                "position": {"x": 1, "y": 2, "direction": "N"},
+                "instructions": ["L", "M", "L", "M", "L", "M", "L", "M", "M"],
+            },
+            {
+                "position": {"x": 3, "y": 3, "direction": "E"},
+                "instructions": ["M", "M", "R", "M", "M", "R", "M", "R", "R", "M"],
+            },
+        ],
+    }
+
+
+def test_parse_mission_brief_example():
+    text = """5 5
+1 2 N
+LMLMLMLMM
+3 3 E
+MMRMMRMRRM"""
+
+    result = parse_mission(text)
+
+    expected = {
+        "plateau": {"max_x": 5, "max_y": 5},
+        "rovers": [
+            {
+                "position": {"x": 1, "y": 2, "direction": "N"},
+                "instructions": ["L", "M", "L", "M", "L", "M", "L", "M", "M"],
+            },
+            {
+                "position": {"x": 3, "y": 3, "direction": "E"},
+                "instructions": ["M", "M", "R", "M", "M", "R", "M", "R", "R", "M"],
+            },
+        ],
+    }
+
+    assert result == expected
