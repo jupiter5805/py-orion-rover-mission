@@ -15,3 +15,9 @@ def parse_position(text):
     direction = parts[2]
 
     return {"x": x, "y": y, "direction": direction}
+
+
+def parse_instructions(text):
+    instructions = list(text)
+
+    return instructions

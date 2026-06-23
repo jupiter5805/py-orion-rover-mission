@@ -1,4 +1,4 @@
-from src.input_layer import parse_plateau, parse_position
+from src.input_layer import parse_plateau, parse_position, parse_instructions
 
 
 def test_parse_plateau_returns_dictionary():
@@ -47,3 +47,21 @@ def test_parse_position_can_parse_west():
     result = parse_position("0 0 W")
 
     assert result == {"x": 0, "y": 0, "direction": "W"}
+
+
+def test_parse_instructions_returns_list():
+    result = parse_instructions("M")
+
+    assert type(result) == list
+
+
+def test_parse_instructions_single_instruction():
+    result = parse_instructions("M")
+
+    assert result == ["M"]
+
+
+def test_parse_instructions_multiple_instructions_in_order():
+    result = parse_instructions("LMLMLMLMM")
+
+    assert result == ["L", "M", "L", "M", "L", "M", "L", "M", "M"]
