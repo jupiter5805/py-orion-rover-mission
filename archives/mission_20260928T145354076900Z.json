@@ -1,0 +1,22 @@
+{
+  "plateau": {
+    "max_x": 5,
+    "max_y": 5
+  },
+  "rovers": [
+    {
+      "type": "standard",
+      "starting_position": {
+        "x": 1,
+        "y": 2,
+        "direction": "N"
+      },
+      "final_position": {
+        "x": 1,
+        "y": 3,
+        "direction": "N"
+      }
+    }
+  ],
+  "timestamp": "2026-09-28T14:53:54.075435+00:00"
+}
