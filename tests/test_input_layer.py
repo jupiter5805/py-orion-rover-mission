@@ -1,4 +1,12 @@
 from src.input_layer import parse_plateau, parse_position, parse_instructions, parse_mission
+import pytest
+
+from src.exceptions import (
+    InvalidPlateauError,
+    InvalidPositionError,
+    InvalidInstructionError,
+    InvalidMissionError,
+)
 
 
 def test_parse_plateau_returns_dictionary():
@@ -144,3 +152,49 @@ MMRMMRMRRM"""
     }
 
     assert result == expected
+
+
+def test_parse_plateau_rejects_missing_coordinate():
+    with pytest.raises(InvalidPlateauError):
+        parse_plateau("5")
+
+
+def test_parse_plateau_rejects_non_integer_coordinate():
+    with pytest.raises(InvalidPlateauError):
+        parse_plateau("five 5")
+
+
+def test_parse_position_rejects_missing_direction():
+    with pytest.raises(InvalidPositionError):
+        parse_position("1 2")
+
+
+def test_parse_position_rejects_invalid_direction():
+    with pytest.raises(InvalidPositionError):
+        parse_position("1 2 Q")
+
+
+def test_parse_position_rejects_non_integer_coordinate():
+    with pytest.raises(InvalidPositionError):
+        parse_position("one 2 N")
+
+
+def test_parse_instructions_rejects_unknown_character():
+    with pytest.raises(
+        InvalidInstructionError,
+        match="Unknown instruction: 'Q'",
+    ):
+        parse_instructions("LMQR")
+
+
+def test_parse_mission_rejects_missing_instruction_line():
+    text = """5 5
+1 2 N"""
+
+    with pytest.raises(InvalidMissionError):
+        parse_mission(text)
+
+
+def test_parse_mission_rejects_empty_input():
+    with pytest.raises(InvalidMissionError):
+        parse_mission("")
