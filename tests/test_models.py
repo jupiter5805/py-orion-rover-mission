@@ -1,6 +1,12 @@
 import pytest
 
 from src.models import Position, Plateau, Rover
+from src.exceptions import InvalidPositionError, InvalidPlateauError
+
+
+# ---------------------------------------------------------
+# Position tests
+# ---------------------------------------------------------
 
 
 def test_position_stores_x_coordinate():
@@ -29,6 +35,11 @@ def test_position_can_store_different_values():
     assert position.direction == "W"
 
 
+# ---------------------------------------------------------
+# Plateau tests
+# ---------------------------------------------------------
+
+
 def test_plateau_stores_bounds():
     plateau = Plateau(5, 5)
 
@@ -50,6 +61,13 @@ def test_plateau_contains_upper_right_corner():
     assert plateau.contains(position) is True
 
 
+def test_plateau_contains_origin():
+    plateau = Plateau(5, 5)
+    position = Position(0, 0, "N")
+
+    assert plateau.contains(position) is True
+
+
 def test_plateau_rejects_position_past_north_edge():
     plateau = Plateau(5, 5)
     position = Position(2, 6, "N")
@@ -64,18 +82,9 @@ def test_plateau_rejects_position_past_east_edge():
     assert plateau.contains(position) is False
 
 
-def test_plateau_rejects_negative_x():
-    plateau = Plateau(5, 5)
-    position = Position(-1, 2, "W")
-
-    assert plateau.contains(position) is False
-
-
-def test_plateau_rejects_negative_y():
-    plateau = Plateau(5, 5)
-    position = Position(2, -1, "S")
-
-    assert plateau.contains(position) is False
+# ---------------------------------------------------------
+# Rover fixtures
+# ---------------------------------------------------------
 
 
 @pytest.fixture
@@ -86,6 +95,11 @@ def rover():
 @pytest.fixture
 def plateau():
     return Plateau(5, 5)
+
+
+# ---------------------------------------------------------
+# Rover tests
+# ---------------------------------------------------------
 
 
 def test_rover_stores_position(rover):
@@ -124,12 +138,20 @@ def test_rover_refuses_move_outside_plateau():
 
     assert rover.position.x == 5
     assert rover.position.y == 5
+    assert rover.position.direction == "N"
 
 
 def test_rover_executes_instruction_sequence(rover, plateau):
     instructions = [
-        "L", "M", "L", "M", "L",
-        "M", "L", "M", "M",
+        "L",
+        "M",
+        "L",
+        "M",
+        "L",
+        "M",
+        "L",
+        "M",
+        "M",
     ]
 
     result = rover.execute_instructions(
@@ -140,3 +162,73 @@ def test_rover_executes_instruction_sequence(rover, plateau):
     assert result.x == 1
     assert result.y == 3
     assert result.direction == "N"
+
+
+# ---------------------------------------------------------
+# Position validation tests
+# ---------------------------------------------------------
+
+
+def test_position_rejects_negative_x():
+    with pytest.raises(InvalidPositionError):
+        Position(-1, 2, "N")
+
+
+def test_position_rejects_negative_y():
+    with pytest.raises(InvalidPositionError):
+        Position(1, -2, "N")
+
+
+def test_position_rejects_non_integer_x():
+    with pytest.raises(InvalidPositionError):
+        Position("1", 2, "N")
+
+
+def test_position_rejects_invalid_direction():
+    with pytest.raises(
+        InvalidPositionError,
+        match="Invalid direction",
+    ):
+        Position(1, 2, "Q")
+
+
+def test_position_property_validates_reassignment():
+    position = Position(1, 2, "N")
+
+    with pytest.raises(InvalidPositionError):
+        position.x = -1
+
+
+# ---------------------------------------------------------
+# Plateau validation tests
+# ---------------------------------------------------------
+
+
+def test_plateau_rejects_zero_max_x():
+    with pytest.raises(InvalidPlateauError):
+        Plateau(0, 5)
+
+
+def test_plateau_rejects_zero_max_y():
+    with pytest.raises(InvalidPlateauError):
+        Plateau(5, 0)
+
+
+def test_plateau_rejects_negative_bounds():
+    with pytest.raises(InvalidPlateauError):
+        Plateau(-5, 5)
+
+
+def test_plateau_rejects_non_integer_bounds():
+    with pytest.raises(InvalidPlateauError):
+        Plateau("5", 5)
+
+
+# ---------------------------------------------------------
+# Rover validation tests
+# ---------------------------------------------------------
+
+
+def test_rover_rejects_non_position_object():
+    with pytest.raises(InvalidPositionError):
+        Rover({"x": 1, "y": 2, "direction": "N"})
