@@ -53,6 +53,25 @@ class Position:
 
         self._direction = value
 
+    def __repr__(self):
+        return (
+            f"Position(x={self.x}, y={self.y}, "
+            f"direction='{self.direction}')"
+        )
+
+    def __str__(self):
+        return f"{self.x} {self.y} {self.direction}"
+
+    def __eq__(self, other):
+        if not isinstance(other, Position):
+            return NotImplemented
+
+        return (
+            self.x == other.x
+            and self.y == other.y
+            and self.direction == other.direction
+        )
+
 
 class Plateau:
     def __init__(self, max_x, max_y):
@@ -91,6 +110,12 @@ class Plateau:
             and 0 <= position.y <= self.max_y
         )
 
+    def __repr__(self):
+        return (
+            f"Plateau(max_x={self.max_x}, "
+            f"max_y={self.max_y})"
+        )
+
 
 class Rover:
     DIRECTIONS = ["N", "E", "S", "W"]
@@ -124,14 +149,22 @@ class Rover:
         )
 
         if instruction == "L":
-            new_index = (current_index - 1) % len(self.DIRECTIONS)
+            new_index = (
+                current_index - 1
+            ) % len(self.DIRECTIONS)
         else:
-            new_index = (current_index + 1) % len(self.DIRECTIONS)
+            new_index = (
+                current_index + 1
+            ) % len(self.DIRECTIONS)
 
-        self.position.direction = self.DIRECTIONS[new_index]
+        self.position.direction = self.DIRECTIONS[
+            new_index
+        ]
 
     def _move_by_distance(self, plateau, distance):
-        dx, dy = self.MOVEMENTS[self.position.direction]
+        dx, dy = self.MOVEMENTS[
+            self.position.direction
+        ]
 
         new_x = self.position.x + (dx * distance)
         new_y = self.position.y + (dy * distance)
@@ -141,8 +174,8 @@ class Rover:
             and 0 <= new_y <= plateau.max_y
         ):
             logger.warning(
-                "Move refused: rover at (%s, %s) facing %s "
-                "would leave plateau",
+                "Move refused: rover at (%s, %s) "
+                "facing %s would leave plateau",
                 self.position.x,
                 self.position.y,
                 self.position.direction,
@@ -156,18 +189,41 @@ class Rover:
         )
 
     def move(self, plateau):
-        self._move_by_distance(plateau, 1)
+        self._move_by_distance(
+            plateau,
+            1,
+        )
 
-    def execute_instructions(self, instructions, plateau):
+    def execute_instructions(
+        self,
+        instructions,
+        plateau,
+    ):
         for instruction in instructions:
             if instruction in ("L", "R"):
                 self.rotate(instruction)
+
             elif instruction == "M":
                 self.move(plateau)
 
         return self.position
 
+    def __repr__(self):
+        return (
+            f"{self.__class__.__name__}"
+            f"(position={self.position!r})"
+        )
+
+    def __eq__(self, other):
+        if type(self) is not type(other):
+            return False
+
+        return self.position == other.position
+
 
 class CargoRover(Rover):
     def move(self, plateau):
-        self._move_by_distance(plateau, 2)
+        self._move_by_distance(
+            plateau,
+            2,
+        )
