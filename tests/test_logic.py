@@ -1,4 +1,4 @@
-from src.logic import rotate, move, execute_instructions
+from src.logic import rotate, move, execute_instructions, run_mission
 
 
 def test_rotate_left_from_north():
@@ -212,3 +212,55 @@ def test_execute_instructions_does_not_mutate_starting_position():
     assert position == {"x": 1, "y": 2, "direction": "N"}
     assert result == {"x": 1, "y": 3, "direction": "N"}
     assert result is not position
+
+
+def test_run_mission_with_no_rovers():
+    mission = {
+        "plateau": {"max_x": 5, "max_y": 5},
+        "rovers": [],
+    }
+
+    result = run_mission(mission)
+
+    assert result == []
+
+
+def test_run_mission_with_one_rover():
+    mission = {
+        "plateau": {"max_x": 5, "max_y": 5},
+        "rovers": [
+            {
+                "position": {"x": 1, "y": 2, "direction": "N"},
+                "instructions": ["L", "M", "L", "M", "L", "M", "L", "M", "M"],
+            }
+        ],
+    }
+
+    result = run_mission(mission)
+
+    assert result == [
+        {"x": 1, "y": 3, "direction": "N"}
+    ]
+
+
+def test_run_mission_with_two_rovers():
+    mission = {
+        "plateau": {"max_x": 5, "max_y": 5},
+        "rovers": [
+            {
+                "position": {"x": 1, "y": 2, "direction": "N"},
+                "instructions": ["L", "M", "L", "M", "L", "M", "L", "M", "M"],
+            },
+            {
+                "position": {"x": 3, "y": 3, "direction": "E"},
+                "instructions": ["M", "M", "R", "M", "M", "R", "M", "R", "R", "M"],
+            },
+        ],
+    }
+
+    result = run_mission(mission)
+
+    assert result == [
+        {"x": 1, "y": 3, "direction": "N"},
+        {"x": 5, "y": 1, "direction": "E"},
+    ]

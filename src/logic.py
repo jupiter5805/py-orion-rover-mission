@@ -56,3 +56,19 @@ def execute_instructions(position, instructions, plateau):
             current_position = move(current_position, plateau)
 
     return current_position
+
+
+def run_mission(mission):
+    plateau = mission["plateau"]
+    final_positions = []
+
+    for rover in mission["rovers"]:
+        final_position = execute_instructions(
+            rover["position"],
+            rover["instructions"],
+            plateau,
+        )
+
+        final_positions.append(final_position)
+
+    return final_positions
