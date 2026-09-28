@@ -1,4 +1,4 @@
-from src.logic import rotate
+from src.logic import rotate, move
 
 
 def test_rotate_left_from_north():
@@ -73,3 +73,39 @@ def test_rotate_does_not_mutate_original_position():
     assert position == {"x": 1, "y": 2, "direction": "N"}
     assert result == {"x": 1, "y": 2, "direction": "E"}
     assert result is not position
+
+
+def test_move_north():
+    position = {"x": 0, "y": 0, "direction": "N"}
+    plateau = {"max_x": 5, "max_y": 5}
+
+    result = move(position, plateau)
+
+    assert result == {"x": 0, "y": 1, "direction": "N"}
+
+
+def test_move_east():
+    position = {"x": 1, "y": 1, "direction": "E"}
+    plateau = {"max_x": 5, "max_y": 5}
+
+    result = move(position, plateau)
+
+    assert result == {"x": 2, "y": 1, "direction": "E"}
+
+
+def test_move_south():
+    position = {"x": 1, "y": 1, "direction": "S"}
+    plateau = {"max_x": 5, "max_y": 5}
+
+    result = move(position, plateau)
+
+    assert result == {"x": 1, "y": 0, "direction": "S"}
+
+
+def test_move_west():
+    position = {"x": 1, "y": 1, "direction": "W"}
+    plateau = {"max_x": 5, "max_y": 5}
+
+    result = move(position, plateau)
+
+    assert result == {"x": 0, "y": 1, "direction": "W"}

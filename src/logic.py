@@ -17,3 +17,21 @@ def rotate(position, instruction):
         "y": position["y"],
         "direction": new_direction,
     }
+
+
+MOVEMENTS = {
+    "N": (0, 1),
+    "E": (1, 0),
+    "S": (0, -1),
+    "W": (-1, 0),
+}
+
+
+def move(position, plateau):
+    dx, dy = MOVEMENTS[position["direction"]]
+
+    return {
+        "x": position["x"] + dx,
+        "y": position["y"] + dy,
+        "direction": position["direction"],
+    }
