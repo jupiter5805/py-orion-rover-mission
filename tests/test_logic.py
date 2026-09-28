@@ -109,3 +109,57 @@ def test_move_west():
     result = move(position, plateau)
 
     assert result == {"x": 0, "y": 1, "direction": "W"}
+
+
+def test_move_does_not_go_past_north_edge():
+    position = {"x": 2, "y": 5, "direction": "N"}
+    plateau = {"max_x": 5, "max_y": 5}
+
+    result = move(position, plateau)
+
+    assert result == {"x": 2, "y": 5, "direction": "N"}
+
+
+def test_move_does_not_go_past_east_edge():
+    position = {"x": 5, "y": 2, "direction": "E"}
+    plateau = {"max_x": 5, "max_y": 5}
+
+    result = move(position, plateau)
+
+    assert result == {"x": 5, "y": 2, "direction": "E"}
+
+
+def test_move_does_not_go_past_south_edge():
+    position = {"x": 2, "y": 0, "direction": "S"}
+    plateau = {"max_x": 5, "max_y": 5}
+
+    result = move(position, plateau)
+
+    assert result == {"x": 2, "y": 0, "direction": "S"}
+
+
+def test_move_does_not_go_past_west_edge():
+    position = {"x": 0, "y": 2, "direction": "W"}
+    plateau = {"max_x": 5, "max_y": 5}
+
+    result = move(position, plateau)
+
+    assert result == {"x": 0, "y": 2, "direction": "W"}
+
+
+def test_move_can_move_along_north_edge():
+    position = {"x": 4, "y": 5, "direction": "E"}
+    plateau = {"max_x": 5, "max_y": 5}
+
+    result = move(position, plateau)
+
+    assert result == {"x": 5, "y": 5, "direction": "E"}
+
+
+def test_move_can_move_to_upper_right_corner():
+    position = {"x": 5, "y": 4, "direction": "N"}
+    plateau = {"max_x": 5, "max_y": 5}
+
+    result = move(position, plateau)
+
+    assert result == {"x": 5, "y": 5, "direction": "N"}

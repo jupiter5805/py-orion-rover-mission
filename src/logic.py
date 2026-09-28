@@ -30,8 +30,17 @@ MOVEMENTS = {
 def move(position, plateau):
     dx, dy = MOVEMENTS[position["direction"]]
 
+    new_x = position["x"] + dx
+    new_y = position["y"] + dy
+
+    if not (
+        0 <= new_x <= plateau["max_x"]
+        and 0 <= new_y <= plateau["max_y"]
+    ):
+        return position
+
     return {
-        "x": position["x"] + dx,
-        "y": position["y"] + dy,
+        "x": new_x,
+        "y": new_y,
         "direction": position["direction"],
     }
