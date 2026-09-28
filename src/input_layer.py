@@ -32,9 +32,10 @@ def parse_plateau(text):
 def parse_position(text):
     parts = text.split()
 
-    if len(parts) != 3:
+    if len(parts) not in (3, 4):
         raise InvalidPositionError(
-            f"Position must contain x, y and direction: '{text}'"
+            f"Position must contain x, y, direction "
+            f"and optional rover type: '{text}'"
         )
 
     try:
@@ -52,11 +53,23 @@ def parse_position(text):
             f"Unknown direction: '{direction}'"
         )
 
-    return {
+    position = {
         "x": x,
         "y": y,
         "direction": direction,
     }
+
+    if len(parts) == 4:
+        rover_marker = parts[3]
+
+        if rover_marker != "C":
+            raise InvalidPositionError(
+                f"Unknown rover type: '{rover_marker}'"
+            )
+
+        position["rover_type"] = "cargo"
+
+    return position
 
 
 def parse_instructions(text):

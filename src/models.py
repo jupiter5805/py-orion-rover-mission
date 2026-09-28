@@ -130,24 +130,33 @@ class Rover:
 
         self.position.direction = self.DIRECTIONS[new_index]
 
-    def move(self, plateau):
+    def _move_by_distance(self, plateau, distance):
         dx, dy = self.MOVEMENTS[self.position.direction]
 
-        proposed_position = Position(
-            self.position.x + dx,
-            self.position.y + dy,
-            self.position.direction,
-        )
+        new_x = self.position.x + (dx * distance)
+        new_y = self.position.y + (dy * distance)
 
-        if plateau.contains(proposed_position):
-            self.position = proposed_position
-        else:
+        if not (
+            0 <= new_x <= plateau.max_x
+            and 0 <= new_y <= plateau.max_y
+        ):
             logger.warning(
-                "Move refused: rover at (%s, %s) facing %s would leave plateau",
+                "Move refused: rover at (%s, %s) facing %s "
+                "would leave plateau",
                 self.position.x,
                 self.position.y,
                 self.position.direction,
             )
+            return
+
+        self.position = Position(
+            new_x,
+            new_y,
+            self.position.direction,
+        )
+
+    def move(self, plateau):
+        self._move_by_distance(plateau, 1)
 
     def execute_instructions(self, instructions, plateau):
         for instruction in instructions:
@@ -157,3 +166,8 @@ class Rover:
                 self.move(plateau)
 
         return self.position
+
+
+class CargoRover(Rover):
+    def move(self, plateau):
+        self._move_by_distance(plateau, 2)

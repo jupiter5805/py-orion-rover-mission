@@ -1,5 +1,5 @@
 import logging
-from src.models import Position, Plateau, Rover
+from src.models import Position, Plateau, Rover, CargoRover
 
 
 logger = logging.getLogger(__name__)
@@ -77,6 +77,11 @@ def run_mission(mission):
         plateau_data["max_y"],
     )
 
+    rover_classes = {
+        "standard": Rover,
+        "cargo": CargoRover,
+    }
+
     final_positions = []
 
     for rover_data in mission["rovers"]:
@@ -88,7 +93,13 @@ def run_mission(mission):
             position_data["direction"],
         )
 
-        rover = Rover(position)
+        rover_type = position_data.get(
+            "rover_type",
+            "standard",
+        )
+
+        rover_class = rover_classes[rover_type]
+        rover = rover_class(position)
 
         final_position = rover.execute_instructions(
             rover_data["instructions"],

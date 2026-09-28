@@ -1,12 +1,7 @@
 import pytest
 
-from src.models import Position, Plateau, Rover
+from src.models import Position, Plateau, Rover, CargoRover
 from src.exceptions import InvalidPositionError, InvalidPlateauError
-
-
-# ---------------------------------------------------------
-# Position tests
-# ---------------------------------------------------------
 
 
 def test_position_stores_x_coordinate():
@@ -33,11 +28,6 @@ def test_position_can_store_different_values():
     assert position.x == 4
     assert position.y == 3
     assert position.direction == "W"
-
-
-# ---------------------------------------------------------
-# Plateau tests
-# ---------------------------------------------------------
 
 
 def test_plateau_stores_bounds():
@@ -82,11 +72,6 @@ def test_plateau_rejects_position_past_east_edge():
     assert plateau.contains(position) is False
 
 
-# ---------------------------------------------------------
-# Rover fixtures
-# ---------------------------------------------------------
-
-
 @pytest.fixture
 def rover():
     return Rover(Position(1, 2, "N"))
@@ -95,11 +80,6 @@ def rover():
 @pytest.fixture
 def plateau():
     return Plateau(5, 5)
-
-
-# ---------------------------------------------------------
-# Rover tests
-# ---------------------------------------------------------
 
 
 def test_rover_stores_position(rover):
@@ -164,11 +144,6 @@ def test_rover_executes_instruction_sequence(rover, plateau):
     assert result.direction == "N"
 
 
-# ---------------------------------------------------------
-# Position validation tests
-# ---------------------------------------------------------
-
-
 def test_position_rejects_negative_x():
     with pytest.raises(InvalidPositionError):
         Position(-1, 2, "N")
@@ -199,11 +174,6 @@ def test_position_property_validates_reassignment():
         position.x = -1
 
 
-# ---------------------------------------------------------
-# Plateau validation tests
-# ---------------------------------------------------------
-
-
 def test_plateau_rejects_zero_max_x():
     with pytest.raises(InvalidPlateauError):
         Plateau(0, 5)
@@ -224,11 +194,38 @@ def test_plateau_rejects_non_integer_bounds():
         Plateau("5", 5)
 
 
-# ---------------------------------------------------------
-# Rover validation tests
-# ---------------------------------------------------------
-
-
 def test_rover_rejects_non_position_object():
     with pytest.raises(InvalidPositionError):
         Rover({"x": 1, "y": 2, "direction": "N"})
+
+
+def test_cargo_rover_moves_two_squares():
+    rover = CargoRover(Position(1, 1, "N"))
+    plateau = Plateau(5, 5)
+
+    rover.move(plateau)
+
+    assert rover.position.x == 1
+    assert rover.position.y == 3
+    assert rover.position.direction == "N"
+
+
+def test_cargo_rover_refuses_move_if_two_squares_leave_plateau():
+    rover = CargoRover(Position(4, 2, "E"))
+    plateau = Plateau(5, 5)
+
+    rover.move(plateau)
+
+    assert rover.position.x == 4
+    assert rover.position.y == 2
+    assert rover.position.direction == "E"
+
+
+def test_standard_rover_still_moves_one_square():
+    rover = Rover(Position(1, 1, "N"))
+    plateau = Plateau(5, 5)
+
+    rover.move(plateau)
+
+    assert rover.position.x == 1
+    assert rover.position.y == 2

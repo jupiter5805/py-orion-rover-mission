@@ -198,3 +198,22 @@ def test_parse_mission_rejects_missing_instruction_line():
 def test_parse_mission_rejects_empty_input():
     with pytest.raises(InvalidMissionError):
         parse_mission("")
+
+
+def test_parse_position_supports_cargo_rover():
+    result = parse_position("1 2 N C")
+
+    assert result == {
+        "x": 1,
+        "y": 2,
+        "direction": "N",
+        "rover_type": "cargo",
+    }
+
+
+def test_parse_position_rejects_unknown_rover_type():
+    with pytest.raises(
+        InvalidPositionError,
+        match="Unknown rover type",
+    ):
+        parse_position("1 2 N X")
