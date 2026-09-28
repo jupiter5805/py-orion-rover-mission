@@ -190,3 +190,25 @@ def test_execute_instructions_with_single_move():
     result = execute_instructions(position, ["M"], plateau)
 
     assert result == {"x": 1, "y": 3, "direction": "N"}
+
+
+def test_execute_instructions_full_sequence():
+    position = {"x": 1, "y": 2, "direction": "N"}
+    instructions = ["L", "M", "L", "M", "L", "M", "L", "M", "M"]
+    plateau = {"max_x": 5, "max_y": 5}
+
+    result = execute_instructions(position, instructions, plateau)
+
+    assert result == {"x": 1, "y": 3, "direction": "N"}
+
+
+def test_execute_instructions_does_not_mutate_starting_position():
+    position = {"x": 1, "y": 2, "direction": "N"}
+    instructions = ["L", "M", "L", "M", "L", "M", "L", "M", "M"]
+    plateau = {"max_x": 5, "max_y": 5}
+
+    result = execute_instructions(position, instructions, plateau)
+
+    assert position == {"x": 1, "y": 2, "direction": "N"}
+    assert result == {"x": 1, "y": 3, "direction": "N"}
+    assert result is not position
