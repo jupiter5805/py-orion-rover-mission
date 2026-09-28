@@ -7,6 +7,8 @@ def rotate(position, instruction):
 
     if instruction == "L":
         new_index = (current_index - 1) % len(DIRECTIONS)
+    else:
+        new_index = (current_index + 1) % len(DIRECTIONS)
 
     new_direction = DIRECTIONS[new_index]
 
