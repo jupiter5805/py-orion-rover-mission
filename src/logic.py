@@ -44,3 +44,15 @@ def move(position, plateau):
         "y": new_y,
         "direction": position["direction"],
     }
+
+
+def execute_instructions(position, instructions, plateau):
+    current_position = position.copy()
+
+    for instruction in instructions:
+        if instruction in ("L", "R"):
+            current_position = rotate(current_position, instruction)
+        elif instruction == "M":
+            current_position = move(current_position, plateau)
+
+    return current_position

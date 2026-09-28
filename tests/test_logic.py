@@ -1,4 +1,4 @@
-from src.logic import rotate, move
+from src.logic import rotate, move, execute_instructions
 
 
 def test_rotate_left_from_north():
@@ -163,3 +163,30 @@ def test_move_can_move_to_upper_right_corner():
     result = move(position, plateau)
 
     assert result == {"x": 5, "y": 5, "direction": "N"}
+
+
+def test_execute_instructions_with_empty_list():
+    position = {"x": 1, "y": 2, "direction": "N"}
+    plateau = {"max_x": 5, "max_y": 5}
+
+    result = execute_instructions(position, [], plateau)
+
+    assert result == {"x": 1, "y": 2, "direction": "N"}
+
+
+def test_execute_instructions_with_single_left_turn():
+    position = {"x": 1, "y": 2, "direction": "N"}
+    plateau = {"max_x": 5, "max_y": 5}
+
+    result = execute_instructions(position, ["L"], plateau)
+
+    assert result == {"x": 1, "y": 2, "direction": "W"}
+
+
+def test_execute_instructions_with_single_move():
+    position = {"x": 1, "y": 2, "direction": "N"}
+    plateau = {"max_x": 5, "max_y": 5}
+
+    result = execute_instructions(position, ["M"], plateau)
+
+    assert result == {"x": 1, "y": 3, "direction": "N"}
