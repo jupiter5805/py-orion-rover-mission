@@ -1,4 +1,5 @@
 from src.logic import rotate, move, execute_instructions, run_mission
+import logging
 
 
 def test_rotate_left_from_north():
@@ -264,3 +265,14 @@ def test_run_mission_with_two_rovers():
         {"x": 1, "y": 3, "direction": "N"},
         {"x": 5, "y": 1, "direction": "E"},
     ]
+
+
+def test_move_logs_warning_when_move_is_refused(caplog):
+    position = {"x": 5, "y": 5, "direction": "N"}
+    plateau = {"max_x": 5, "max_y": 5}
+
+    with caplog.at_level(logging.WARNING):
+        result = move(position, plateau)
+
+    assert result == position
+    assert "Move refused" in caplog.text

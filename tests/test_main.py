@@ -1,3 +1,4 @@
+import logging
 from main import run
 
 
@@ -28,3 +29,11 @@ MMRMMRMRRM"""
     ]
 
     assert captured.out == "1 3 N\n5 1 E\n"
+
+
+def test_run_logs_mission_error(caplog):
+    with caplog.at_level(logging.ERROR):
+        result = run("5")
+
+    assert result == []
+    assert "Mission failed" in caplog.text

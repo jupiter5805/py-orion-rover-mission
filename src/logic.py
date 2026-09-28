@@ -1,3 +1,7 @@
+import logging
+
+
+logger = logging.getLogger(__name__)
 DIRECTIONS = ["N", "E", "S", "W"]
 
 
@@ -37,6 +41,12 @@ def move(position, plateau):
         0 <= new_x <= plateau["max_x"]
         and 0 <= new_y <= plateau["max_y"]
     ):
+        logger.warning(
+            "Move refused: rover at (%s, %s) facing %s would leave plateau",
+            position["x"],
+            position["y"],
+            position["direction"],
+        )
         return position
 
     return {

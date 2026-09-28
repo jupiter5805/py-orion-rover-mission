@@ -118,3 +118,12 @@ The logic layer should not import the input layer.
 The only place where parsing and mission running should meet is `main.py` or an integration test.
 
 This keeps the project easier to test and easier to change later.
+## Task 12: Error Handling in main.py
+
+`main.py` catches `MissionError`, which is the base class for the custom
+mission exceptions. This means malformed mission input can be handled without
+catching unrelated programming errors.
+
+For now, a clear error message is printed to the user and the run returns an
+empty result. Logging will be added in the next task, so user-facing output
+and diagnostic logging will remain separate.

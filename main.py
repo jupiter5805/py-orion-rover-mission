@@ -1,7 +1,11 @@
+import logging
+
 from src.input_layer import parse_mission
 from src.logic import run_mission
 from src.exceptions import MissionError
 
+
+logger = logging.getLogger(__name__)
 
 INPUT = """5 5
 1 2 N
@@ -19,13 +23,21 @@ def format_position(position):
 
 
 def run(text):
+    logger.info("Starting mission")
+
     try:
         mission = parse_mission(text)
         final_positions = run_mission(mission)
 
     except MissionError as error:
+        logger.error("Mission failed: %s", error)
         print(f"Mission error: {error}")
         return []
+
+    logger.info(
+        "Mission completed with %s rover(s)",
+        len(final_positions),
+    )
 
     for position in final_positions:
         print(format_position(position))
@@ -34,6 +46,11 @@ def run(text):
 
 
 def main():
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(levelname)s:%(name)s:%(message)s",
+    )
+
     return run(INPUT)
 
 
