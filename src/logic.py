@@ -1,4 +1,5 @@
 import logging
+from src.models import Position, Plateau, Rover
 
 
 logger = logging.getLogger(__name__)
@@ -69,16 +70,37 @@ def execute_instructions(position, instructions, plateau):
 
 
 def run_mission(mission):
-    plateau = mission["plateau"]
+    plateau_data = mission["plateau"]
+
+    plateau = Plateau(
+        plateau_data["max_x"],
+        plateau_data["max_y"],
+    )
+
     final_positions = []
 
-    for rover in mission["rovers"]:
-        final_position = execute_instructions(
-            rover["position"],
-            rover["instructions"],
+    for rover_data in mission["rovers"]:
+        position_data = rover_data["position"]
+
+        position = Position(
+            position_data["x"],
+            position_data["y"],
+            position_data["direction"],
+        )
+
+        rover = Rover(position)
+
+        final_position = rover.execute_instructions(
+            rover_data["instructions"],
             plateau,
         )
 
-        final_positions.append(final_position)
+        final_positions.append(
+            {
+                "x": final_position.x,
+                "y": final_position.y,
+                "direction": final_position.direction,
+            }
+        )
 
     return final_positions
